@@ -115,7 +115,7 @@ public class WordGuessServer extends Application {
 		ports.getChildren().addAll(port, port2);
 		clients.getChildren().addAll(clients1, clients2);
 		VBox data = new VBox();
-		data.getChildren().addAll(ports, clients);
+		data.getChildren().addAll(ports);
 		VBox buttons = new VBox();
 		buttons.getChildren().addAll(startserver);
 		pane.setTop(data);
