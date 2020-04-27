@@ -29,14 +29,14 @@ public class Server{
 		port = port2;
 		server.start();
 		foods.add("pizza");
-		foods.add("hamburgers");
+		foods.add("hamburger");
 		foods.add("pasta");
 		games.add("scrabble");
 		games.add("chess");
 		games.add("poker");
 		countries.add("england");
 		countries.add("mexico");
-		countries.add("India");
+		countries.add("india");
 		serverclientinfo = new Wordguess();
 		playeroneonserver = false;
 	}
@@ -143,12 +143,18 @@ public class Server{
 							    {
 							    	Wordguess tempinfo = (Wordguess)object;
 					    	    	serverinfo.get(count-1).category = tempinfo.category;
-					    	    	System.out.println("Server: "+serverinfo.get(count-1).category);
+					    	    	//System.out.println("Server: "+serverinfo.get(count-1).category);
 					    	    	serverinfo.get(count-1).guess = tempinfo.guess;
-					    	    	System.out.println("Server guess: "+serverinfo.get(count-1).guess);
+					    	    	//System.out.println("Server guess: "+serverinfo.get(count-1).guess);
 					    	    	serverinfo.get(count-1).wordguess = tempinfo.wordguess;
-					    	    	//callback client one's hand and guess to server gui
-                                    if(serverinfo.get(count-1).guess.equals("")==false)
+					    	    	serverinfo.get(count-1).guessedfoods = tempinfo.guessedfoods;
+					    	    	serverinfo.get(count-1).guessedgames = tempinfo.guessedgames;
+					    	    	serverinfo.get(count-1).guessedcountries = tempinfo.guessedcountries;
+				    				serverinfo.get(count-1).playagain = tempinfo.playagain;
+				    				serverinfo.get(count-1).won = tempinfo.won;
+				    				serverinfo.get(count-1).lost= tempinfo.lost;
+                                    //check if guess or word
+					    	    	if(serverinfo.get(count-1).guess.equals("")==false)
 								    {
 								    	//guessed letter
 								    	callback.accept("client: " + count + " guessed the letter " + serverinfo.get(count-1).guess);
@@ -161,11 +167,11 @@ public class Server{
 								    		    index = word.indexOf(serverinfo.get(count-1).guess, index + 1);
 								    		}
 								    		//send positions of letter in word back to client
-								    		String str = serverinfo.get(count-1).guess+" is inside the word and is located at positions: ";
-								    		str+=serverinfo.get(count-1).position.get(0);
+								    		String str = serverinfo.get(count-1).guess+" is inside the word and is letter: ";
+								    		str+=String.valueOf(serverinfo.get(count-1).position.get(0)+1);
 								    		for(int i =1; i < serverinfo.get(count-1).position.size(); i++)
 								    		{
-								    			str+=", " +serverinfo.get(count-1).position.get(i);
+								    			str+=", " +String.valueOf(serverinfo.get(count-1).position.get(i)+1);
 								    		}
 								    		send(str, count);
 								    		serverinfo.get(count-1).position.clear();
@@ -179,13 +185,42 @@ public class Server{
 								    		{
 								    			//couldn't guess the word correctly after 6 guesses 6 times
 								    			Wordguess tempinfo1 = new Wordguess();
-								    			if(serverinfo.get(count-1).category == "foods")
+								    			if(serverinfo.get(count-1).category.equals("foods")==true)
 								 				{
 									    			serverinfo.get(count-1).maxguessfoods+=1;
 									    			if(serverinfo.get(count-1).maxguessfoods==3)
 									    			{
 									    				//guessed food word wrong three times
-									    				serverinfo.get(count-1).lost = true;
+									    				word = "";
+									    				foods = new ArrayList<String>();
+								 						games = new ArrayList<String>();
+								 						countries = new ArrayList<String>();
+								 						foods.add("pizza");
+									    				foods.add("hamburger");
+									    				foods.add("pasta");
+									    				games.add("scrabble");
+									    				games.add("chess");
+									    				games.add("poker");
+									    				countries.add("england");
+									    				countries.add("mexico");
+									    				countries.add("india");
+									    				serverinfo.get(count-1).won = false;
+									 					serverinfo.get(count-1).lost = true;
+									 					serverinfo.get(count-1).haveoneplayer = false;
+									 					serverinfo.get(count-1).category = "";
+									 					serverinfo.get(count-1).numberofletters = 0;
+									 					serverinfo.get(count-1).guess = "";
+									 					serverinfo.get(count-1).wordguess = "";
+									 					serverinfo.get(count-1).guessedfoods = false;
+									 					serverinfo.get(count-1).guessedgames = false;
+									 					serverinfo.get(count-1).guessedcountries = false;
+									 					serverinfo.get(count-1).maxguessfoods = 0;
+									 					serverinfo.get(count-1).maxguessgames = 0;
+									 					serverinfo.get(count-1).maxguesscountries = 0;
+									 					serverinfo.get(count-1).position = new ArrayList<Integer>();
+									 					serverinfo.get(count-1).remaininguess = 6;
+									 					serverinfo.get(count-1).playagain = false;
+									    				tempinfo1.playagain = serverinfo.get(count-1).playagain;
 									    				tempinfo1.category = serverinfo.get(count-1).category;
 									    				tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
 									 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
@@ -200,7 +235,21 @@ public class Server{
 									    			else
 									    			{
 									    				//guess food word wrong
-									    				serverinfo.get(count-1).category = "";
+									    				word = "";
+									    				serverinfo.get(count-1).won = false;
+									 					serverinfo.get(count-1).lost = false;
+									 					serverinfo.get(count-1).haveoneplayer = false;
+									 					serverinfo.get(count-1).category = "";
+									 					serverinfo.get(count-1).numberofletters = 0;
+									 					serverinfo.get(count-1).guess = "";
+									 					serverinfo.get(count-1).wordguess = "";
+									 					serverinfo.get(count-1).guessedfoods = false;
+									 					serverinfo.get(count-1).guessedgames = false;
+									 					serverinfo.get(count-1).guessedcountries = false;
+									 					serverinfo.get(count-1).position = new ArrayList<Integer>();
+									 					serverinfo.get(count-1).remaininguess = 6;
+									 					serverinfo.get(count-1).playagain = true;
+									    				tempinfo1.playagain = serverinfo.get(count-1).playagain;
 									    				tempinfo1.category = serverinfo.get(count-1).category;
 									    				tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
 									 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
@@ -212,13 +261,42 @@ public class Server{
 									 					send(tempinfo1, count);
 									    			}
 								 				}
-								 				else if(serverinfo.get(count-1).category == "games")
+								 				else if(serverinfo.get(count-1).category.equals("games")==true)
 								 				{
 								 					serverinfo.get(count-1).maxguessgames+=1;
 									    			if(serverinfo.get(count-1).maxguessgames==3)
 									    			{
 									    				//guessed games word wrong three times
-									    				serverinfo.get(count-1).lost = true;
+									    				word = "";
+									    				foods = new ArrayList<String>();
+								 						games = new ArrayList<String>();
+								 						countries = new ArrayList<String>();
+								 						foods.add("pizza");
+									    				foods.add("hamburger");
+									    				foods.add("pasta");
+									    				games.add("scrabble");
+									    				games.add("chess");
+									    				games.add("poker");
+									    				countries.add("england");
+									    				countries.add("mexico");
+									    				countries.add("india");
+									    				serverinfo.get(count-1).won = false;
+									 					serverinfo.get(count-1).lost = true;
+									 					serverinfo.get(count-1).haveoneplayer = false;
+									 					serverinfo.get(count-1).category = "";
+									 					serverinfo.get(count-1).numberofletters = 0;
+									 					serverinfo.get(count-1).guess = "";
+									 					serverinfo.get(count-1).wordguess = "";
+									 					serverinfo.get(count-1).guessedfoods = false;
+									 					serverinfo.get(count-1).guessedgames = false;
+									 					serverinfo.get(count-1).guessedcountries = false;
+									 					serverinfo.get(count-1).maxguessfoods = 0;
+									 					serverinfo.get(count-1).maxguessgames = 0;
+									 					serverinfo.get(count-1).maxguesscountries = 0;
+									 					serverinfo.get(count-1).position = new ArrayList<Integer>();
+									 					serverinfo.get(count-1).remaininguess = 6;
+									 					serverinfo.get(count-1).playagain = false;
+									    				tempinfo1.playagain = serverinfo.get(count-1).playagain;
 									    				tempinfo1.category = serverinfo.get(count-1).category;
 									    				tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
 									 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
@@ -233,10 +311,24 @@ public class Server{
 									    			else
 									    			{
 									    				//guessed games word wrong
-										 				serverinfo.get(count-1).category = "";
+									    				word = "";
+									    				serverinfo.get(count-1).won = false;
+									 					serverinfo.get(count-1).lost = false;
+									 					serverinfo.get(count-1).haveoneplayer = false;
+									 					serverinfo.get(count-1).category = "";
+									 					serverinfo.get(count-1).numberofletters = 0;
+									 					serverinfo.get(count-1).guess = "";
+									 					serverinfo.get(count-1).wordguess = "";
+									 					serverinfo.get(count-1).guessedfoods = false;
+									 					serverinfo.get(count-1).guessedgames = false;
+									 					serverinfo.get(count-1).guessedcountries = false;
+									 					serverinfo.get(count-1).position = new ArrayList<Integer>();
+									 					serverinfo.get(count-1).remaininguess = 6;
+									 					serverinfo.get(count-1).playagain = true;
+									    				tempinfo1.playagain = serverinfo.get(count-1).playagain;
 										 				tempinfo1.category = serverinfo.get(count-1).category;
-									    				tempinfo1.numberofletters = 0;
-									 					tempinfo1.remaininguess = 6;
+									    				tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
+									 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
 									 					tempinfo1.won = serverinfo.get(count-1).won;
 									 					tempinfo1.lost = serverinfo.get(count-1).lost;
 									 					tempinfo1.guessedfoods = serverinfo.get(count-1).guessedfoods;
@@ -251,7 +343,36 @@ public class Server{
 								 					if(serverinfo.get(count-1).maxguesscountries==3)
 									    			{
 								 						//guessed countries word wrong three times
-								 						serverinfo.get(count-1).lost = true;
+								 						foods = new ArrayList<String>();
+								 						games = new ArrayList<String>();
+								 						countries = new ArrayList<String>();
+								 						foods.add("pizza");
+								 						foods.add("hamburger");
+								 						foods.add("pasta");
+								 						games.add("scrabble");
+								 						games.add("chess");
+								 						games.add("poker");
+								 						countries.add("england");
+								 						countries.add("mexico");
+								 						countries.add("india");
+								 						word = "";
+								 						serverinfo.get(count-1).won = false;
+									 					serverinfo.get(count-1).lost = true;
+									 					serverinfo.get(count-1).haveoneplayer = false;
+									 					serverinfo.get(count-1).category = "";
+									 					serverinfo.get(count-1).numberofletters = 0;
+									 					serverinfo.get(count-1).guess = "";
+									 					serverinfo.get(count-1).wordguess = "";
+									 					serverinfo.get(count-1).guessedfoods = false;
+									 					serverinfo.get(count-1).guessedgames = false;
+									 					serverinfo.get(count-1).guessedcountries = false;
+									 					serverinfo.get(count-1).maxguessfoods = 0;
+									 					serverinfo.get(count-1).maxguessgames = 0;
+									 					serverinfo.get(count-1).maxguesscountries = 0;
+									 					serverinfo.get(count-1).position = new ArrayList<Integer>();
+									 					serverinfo.get(count-1).remaininguess = 6;
+									 					serverinfo.get(count-1).playagain = false;
+									 					tempinfo1.playagain = serverinfo.get(count-1).playagain;
 								 						tempinfo1.lost = serverinfo.get(count-1).lost;
 											    		tempinfo1.category = serverinfo.get(count-1).category;
 									    				tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
@@ -267,7 +388,21 @@ public class Server{
 									    			else
 									    			{
 									    				//guessed countries word wrong
-									    				serverinfo.get(count-1).category = "";
+									    				word = "";
+									    				serverinfo.get(count-1).won = false;
+									 					serverinfo.get(count-1).lost = false;
+									 					serverinfo.get(count-1).haveoneplayer = false;
+									 					serverinfo.get(count-1).category = "";
+									 					serverinfo.get(count-1).numberofletters = 0;
+									 					serverinfo.get(count-1).guess = "";
+									 					serverinfo.get(count-1).wordguess = "";
+									 					serverinfo.get(count-1).guessedfoods = false;
+									 					serverinfo.get(count-1).guessedgames = false;
+									 					serverinfo.get(count-1).guessedcountries = false;
+									 					serverinfo.get(count-1).position = new ArrayList<Integer>();
+									 					serverinfo.get(count-1).remaininguess = 6;
+									 					serverinfo.get(count-1).playagain = true;
+									 					tempinfo1.playagain = serverinfo.get(count-1).playagain;
 									    				tempinfo1.category = serverinfo.get(count-1).category;
 									    				tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
 									 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
@@ -298,14 +433,29 @@ public class Server{
 								    	callback.accept("client: " + count + " guessed the word " + serverinfo.get(count-1).wordguess);
 								    	if(word.equals(serverinfo.get(count-1).wordguess)==true)
 								    	{
-								    		Wordguess tempinfo1 = new Wordguess();
-								    		if(serverinfo.get(count-1).category == "foods")
+								    		//callback.accept("category: "+serverinfo.get(count-1).category);
+								    		if(serverinfo.get(count-1).category.equals("foods")==true)
 							 				{
 							 					//client picked right foods word 
 								    			serverinfo.get(count-1).guessedfoods=true;
-							 					if(serverinfo.get(count-1).guessedfoods==true && serverinfo.get(count-1).guessedgames==true && serverinfo.get(count-1).guessedcountries==true)
+								    			serverinfo.get(count-1).categorieswon+=1;
+							 					if(serverinfo.get(count-1).categorieswon==3)
 							 					{
 							 						//client won
+							 						Wordguess tempinfo1 = new Wordguess();
+							 						word = "";
+							 						foods = new ArrayList<String>();
+							 						games = new ArrayList<String>();
+							 						countries = new ArrayList<String>();
+							 						foods.add("pizza");
+							 						foods.add("hamburger");
+							 						foods.add("pasta");
+							 						games.add("scrabble");
+							 						games.add("chess");
+							 						games.add("poker");
+							 						countries.add("england");
+							 						countries.add("mexico");
+							 						countries.add("india");
 							 						serverinfo.get(count-1).won = true;
 								 					serverinfo.get(count-1).lost = false;
 								 					serverinfo.get(count-1).haveoneplayer = false;
@@ -321,19 +471,26 @@ public class Server{
 								 					serverinfo.get(count-1).maxguesscountries = 0;
 								 					serverinfo.get(count-1).position = new ArrayList<Integer>();
 								 					serverinfo.get(count-1).remaininguess = 6;
+								 					serverinfo.get(count-1).categorieswon = 0;
+								 					serverinfo.get(count-1).playagain = false;
+								    				tempinfo1.playagain = serverinfo.get(count-1).playagain;
 							 						tempinfo1.category = serverinfo.get(count-1).category;
 								    				tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
 								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
 								 					tempinfo1.won = serverinfo.get(count-1).won;
 								 					tempinfo1.lost = serverinfo.get(count-1).lost;
+								 					tempinfo1.categorieswon = serverinfo.get(count-1).categorieswon;
 								 					tempinfo1.guessedfoods = serverinfo.get(count-1).guessedfoods;
 								 					tempinfo1.guessedgames = serverinfo.get(count-1).guessedgames;
 								 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
 								 					send(tempinfo1, count);
+								 					callback.accept("Client: "+count+" won the game");
 							 					}
 							 					else
 							 					{
 							 						//client picked right foods word
+							 						Wordguess tempinfo1 = new Wordguess();
+							 						word = "";
 							 						serverinfo.get(count-1).won = false;
 								 					serverinfo.get(count-1).lost = false;
 								 					serverinfo.get(count-1).haveoneplayer = false;
@@ -344,29 +501,45 @@ public class Server{
 								 					serverinfo.get(count-1).guessedfoods = true;
 								 					serverinfo.get(count-1).guessedgames = false;
 								 					serverinfo.get(count-1).guessedcountries = false;
-								 					serverinfo.get(count-1).maxguessfoods = 0;
-								 					serverinfo.get(count-1).maxguessgames = 0;
-								 					serverinfo.get(count-1).maxguesscountries = 0;
 								 					serverinfo.get(count-1).position = new ArrayList<Integer>();
 								 					serverinfo.get(count-1).remaininguess = 6;
+								 					serverinfo.get(count-1).playagain = false;
+								    				tempinfo1.playagain = serverinfo.get(count-1).playagain;
 							 						tempinfo1.category = serverinfo.get(count-1).category;
 								    				tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
 								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
 								 					tempinfo1.won = serverinfo.get(count-1).won;
 								 					tempinfo1.lost = serverinfo.get(count-1).lost;
+								 					tempinfo1.categorieswon = serverinfo.get(count-1).categorieswon;
 								 					tempinfo1.guessedfoods = serverinfo.get(count-1).guessedfoods;
 								 					tempinfo1.guessedgames = serverinfo.get(count-1).guessedgames;
 								 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
 								 					send(tempinfo1, count);
+								 					callback.accept("Client: "+count+" guessed the right word");
 							 					}
 							 				}
-							 				else if(serverinfo.get(count-1).category == "games")
+							 				else if(serverinfo.get(count-1).category.equals("games")==true)
 							 				{
 							 					//client picked right games word
 							 					serverinfo.get(count-1).guessedgames=true;
-							 					if(serverinfo.get(count-1).guessedfoods==true && serverinfo.get(count-1).guessedgames==true && serverinfo.get(count-1).guessedcountries==true)
+							 					serverinfo.get(count-1).categorieswon+=1;
+							 					if(serverinfo.get(count-1).categorieswon==3)
 							 					{
 							 						//client won the game
+							 						Wordguess tempinfo1 = new Wordguess();
+							 						word = "";
+							 						foods = new ArrayList<String>();
+							 						games = new ArrayList<String>();
+							 						countries = new ArrayList<String>();
+							 						foods.add("pizza");
+							 						foods.add("hamburger");
+							 						foods.add("pasta");
+							 						games.add("scrabble");
+							 						games.add("chess");
+							 						games.add("poker");
+							 						countries.add("england");
+							 						countries.add("mexico");
+							 						countries.add("india");
 							 						serverinfo.get(count-1).won = true;
 								 					serverinfo.get(count-1).lost = false;
 								 					serverinfo.get(count-1).haveoneplayer = false;
@@ -382,18 +555,25 @@ public class Server{
 								 					serverinfo.get(count-1).maxguesscountries = 0;
 								 					serverinfo.get(count-1).position = new ArrayList<Integer>();
 								 					serverinfo.get(count-1).remaininguess = 6;
+								 					serverinfo.get(count-1).categorieswon = 0;
+								 					serverinfo.get(count-1).playagain = false;
+								    				tempinfo1.playagain = serverinfo.get(count-1).playagain;
 							 						tempinfo1.category = serverinfo.get(count-1).category;
 								    				tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
 								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
+								 					tempinfo1.categorieswon = serverinfo.get(count-1).categorieswon;
 								 					tempinfo1.won = serverinfo.get(count-1).won;
 								 					tempinfo1.lost = serverinfo.get(count-1).lost;
 								 					tempinfo1.guessedfoods = serverinfo.get(count-1).guessedfoods;
 								 					tempinfo1.guessedgames = serverinfo.get(count-1).guessedgames;
 								 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
 								 					send(tempinfo1, count);
+								 					callback.accept("Client: "+count+" won the game");
 							 					}
 							 					else
 							 					{
+							 						word = "";
+							 						Wordguess tempinfo1 = new Wordguess();
 							 						serverinfo.get(count-1).won = false;
 								 					serverinfo.get(count-1).lost = false;
 								 					serverinfo.get(count-1).haveoneplayer = false;
@@ -404,30 +584,45 @@ public class Server{
 								 					serverinfo.get(count-1).guessedfoods = false;
 								 					serverinfo.get(count-1).guessedgames = true;
 								 					serverinfo.get(count-1).guessedcountries = false;
-								 					serverinfo.get(count-1).maxguessfoods = 0;
-								 					serverinfo.get(count-1).maxguessgames = 0;
-								 					serverinfo.get(count-1).maxguesscountries = 0;
 								 					serverinfo.get(count-1).position = new ArrayList<Integer>();
 								 					serverinfo.get(count-1).remaininguess = 6;
+								 					serverinfo.get(count-1).playagain = false;
+								    				tempinfo1.playagain = serverinfo.get(count-1).playagain;
 							 						tempinfo1.category = serverinfo.get(count-1).category;
 								    				tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
 								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
+								 					tempinfo1.categorieswon = serverinfo.get(count-1).categorieswon;
 								 					tempinfo1.won = serverinfo.get(count-1).won;
 								 					tempinfo1.lost = serverinfo.get(count-1).lost;
 								 					tempinfo1.guessedfoods = serverinfo.get(count-1).guessedfoods;
 								 					tempinfo1.guessedgames = serverinfo.get(count-1).guessedgames;
 								 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
-								 					send(tempinfo, count);
+								 					send(tempinfo1, count);
+								 					callback.accept("Client: "+count+" guessed the right word");
 							 					}
 							 				}
 							 				else
 							 				{
 							 					//client picked right countries word
 							 					serverinfo.get(count-1).guessedcountries=true;
-							 					if(serverinfo.get(count-1).guessedfoods==true && serverinfo.get(count-1).guessedgames==true && serverinfo.get(count-1).guessedcountries==true)
+							 					serverinfo.get(count-1).categorieswon+=1;
+							 					if(serverinfo.get(count-1).categorieswon == 3)
 							 					{
 							 						//client won the game
-								 					serverinfo.get(count-1).won = true;
+							 						Wordguess tempinfo1 = new Wordguess();
+							 						word = "";
+							 						foods = new ArrayList<String>();
+							 						games = new ArrayList<String>();
+							 						countries = new ArrayList<String>();
+							 						foods.add("pizza");
+							 						foods.add("hamburger");
+							 						foods.add("pasta");
+							 						games.add("scrabble");
+							 						games.add("chess");
+							 						games.add("poker");
+							 						countries.add("england");
+							 						countries.add("mexico");
+							 						countries.add("india");serverinfo.get(count-1).won = true;
 								 					serverinfo.get(count-1).lost = false;
 								 					serverinfo.get(count-1).haveoneplayer = false;
 								 					serverinfo.get(count-1).category = "";
@@ -440,21 +635,30 @@ public class Server{
 								 					serverinfo.get(count-1).maxguessfoods = 0;
 								 					serverinfo.get(count-1).maxguessgames = 0;
 								 					serverinfo.get(count-1).maxguesscountries = 0;
+								 					serverinfo.get(count-1).categorieswon = 0;
 								 					serverinfo.get(count-1).position = new ArrayList<Integer>();
 								 					serverinfo.get(count-1).remaininguess = 6;
+								 					serverinfo.get(count-1).categorieswon = 0;
+								 					serverinfo.get(count-1).playagain = false;
+								    				tempinfo1.playagain = serverinfo.get(count-1).playagain;
 							 						tempinfo1.category = serverinfo.get(count-1).category;
 								    				tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
 								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
+								 					tempinfo1.categorieswon = serverinfo.get(count-1).categorieswon;
 								 					tempinfo1.won = serverinfo.get(count-1).won;
 								 					tempinfo1.lost = serverinfo.get(count-1).lost;
 								 					tempinfo1.guessedfoods = serverinfo.get(count-1).guessedfoods;
 								 					tempinfo1.guessedgames = serverinfo.get(count-1).guessedgames;
 								 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
 								 					send(tempinfo1, count);
+								 					callback.accept("Client: "+count+" won the game");
 							 					}
 							 					else
 							 					{
-								 					serverinfo.get(count-1).won = false;
+							 						Wordguess tempinfo1 = new Wordguess();
+							 						//client won countries category
+							 						word = "";
+							 						serverinfo.get(count-1).won = false;
 								 					serverinfo.get(count-1).lost = false;
 								 					serverinfo.get(count-1).haveoneplayer = false;
 								 					serverinfo.get(count-1).category = "";
@@ -464,20 +668,24 @@ public class Server{
 								 					serverinfo.get(count-1).guessedfoods = false;
 								 					serverinfo.get(count-1).guessedgames = false;
 								 					serverinfo.get(count-1).guessedcountries = true;
-								 					serverinfo.get(count-1).maxguessfoods = 0;
-								 					serverinfo.get(count-1).maxguessgames = 0;
-								 					serverinfo.get(count-1).maxguesscountries = 0;
 								 					serverinfo.get(count-1).position = new ArrayList<Integer>();
 								 					serverinfo.get(count-1).remaininguess = 6;
+								 					serverinfo.get(count-1).playagain = false;
+								    				//reset everything
+								 					tempinfo1.playagain = serverinfo.get(count-1).playagain;
 							 						tempinfo1.category = serverinfo.get(count-1).category;
 								    				tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
 								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
+								 					tempinfo1.categorieswon = serverinfo.get(count-1).categorieswon;
 								 					tempinfo1.won = serverinfo.get(count-1).won;
 								 					tempinfo1.lost = serverinfo.get(count-1).lost;
 								 					tempinfo1.guessedfoods = serverinfo.get(count-1).guessedfoods;
 								 					tempinfo1.guessedgames = serverinfo.get(count-1).guessedgames;
 								 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
+								 					tempinfo1.position = serverinfo.get(count-1).position;
+								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
 								 					send(tempinfo1, count);
+								 					callback.accept("Client: "+count+" guessed the right word");
 							 					}
 							 				}
 								    		serverinfo.get(count-1).wordguess = "";
@@ -485,14 +693,28 @@ public class Server{
 								    	else
 								    	{
 								    		//didn't guess the word right
-								    		Wordguess tempinfo1 = new Wordguess();
-								    		if(serverinfo.get(count-1).category == "foods")
+								    		if(serverinfo.get(count-1).category.equals("foods")==true)
 							 				{
+								    			//System.out.println("foods");
 								    			serverinfo.get(count-1).maxguessfoods+=1;
-								    			if(serverinfo.get(count-1).maxguessfoods>3)
+								    			if(serverinfo.get(count-1).maxguessfoods==3)
 								    			{
 								    				//guessed food word wrong three times
-								 					serverinfo.get(count-1).won = false;
+								    				Wordguess tempinfo1 = new Wordguess();
+								    				word = "";
+								    				foods = new ArrayList<String>();
+							 						games = new ArrayList<String>();
+							 						countries = new ArrayList<String>();
+							 						foods.add("pizza");
+							 						foods.add("hamburger");
+							 						foods.add("pasta");
+							 						games.add("scrabble");
+							 						games.add("chess");
+							 						games.add("poker");
+							 						countries.add("england");
+							 						countries.add("mexico");
+							 						countries.add("india");
+							 						serverinfo.get(count-1).won = false;
 								 					serverinfo.get(count-1).lost = true;
 								 					serverinfo.get(count-1).haveoneplayer = false;
 								 					serverinfo.get(count-1).category = "";
@@ -505,15 +727,31 @@ public class Server{
 								 					serverinfo.get(count-1).maxguessfoods = 0;
 								 					serverinfo.get(count-1).maxguessgames = 0;
 								 					serverinfo.get(count-1).maxguesscountries = 0;
+								 					serverinfo.get(count-1).categorieswon = 0;
 								 					serverinfo.get(count-1).position = new ArrayList<Integer>();
 								 					serverinfo.get(count-1).remaininguess = 6;
+								 					serverinfo.get(count-1).playagain = false;
+								    				tempinfo1.playagain = serverinfo.get(count-1).playagain;
+								 					tempinfo1.category = serverinfo.get(count-1).category;
+								    				tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
+								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
+								 					tempinfo1.won = serverinfo.get(count-1).won;
+								 					tempinfo1.lost = serverinfo.get(count-1).lost;
+								 					tempinfo1.categorieswon = serverinfo.get(count-1).categorieswon;
+								 					tempinfo1.guessedfoods = serverinfo.get(count-1).guessedfoods;
+								 					tempinfo1.guessedgames = serverinfo.get(count-1).guessedgames;
+								 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
+								 					tempinfo1.position = serverinfo.get(count-1).position;
+								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
 								 					send(tempinfo1, count);
-								    				callback.accept("Client: "+count+"lost the game");
+								    				callback.accept("Client: "+count+" lost the game");
 								    			}
 								    			else
 								    			{
 								    				//guess food word wrong
-								 					serverinfo.get(count-1).won = false;
+								    				Wordguess tempinfo1 = new Wordguess();
+								    				word = "";
+							 						serverinfo.get(count-1).won = false;
 								 					serverinfo.get(count-1).lost = false;
 								 					serverinfo.get(count-1).haveoneplayer = false;
 								 					serverinfo.get(count-1).category = "";
@@ -523,23 +761,49 @@ public class Server{
 								 					serverinfo.get(count-1).guessedfoods = false;
 								 					serverinfo.get(count-1).guessedgames = false;
 								 					serverinfo.get(count-1).guessedcountries = false;
-								 					serverinfo.get(count-1).maxguessfoods = 0;
-								 					serverinfo.get(count-1).maxguessgames = 0;
-								 					serverinfo.get(count-1).maxguesscountries = 0;
 								 					serverinfo.get(count-1).position = new ArrayList<Integer>();
 								 					serverinfo.get(count-1).remaininguess = 6;
+								 					//client can pick another category
+								 					serverinfo.get(count-1).playagain = true;
+								    				tempinfo1.playagain = serverinfo.get(count-1).playagain;
+								 					tempinfo1.category = serverinfo.get(count-1).category;
+								    				tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
+								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
+								 					tempinfo1.won = serverinfo.get(count-1).won;
+								 					tempinfo1.lost = serverinfo.get(count-1).lost;
+								 					tempinfo1.guessedfoods = serverinfo.get(count-1).guessedfoods;
+								 					tempinfo1.guessedgames = serverinfo.get(count-1).guessedgames;
+								 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
+								 					tempinfo1.categorieswon = serverinfo.get(count-1).categorieswon;
+								 					tempinfo1.position = serverinfo.get(count-1).position;
+								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
 								 					send(tempinfo1, count);
 								 					callback.accept("Client: "+count+" guessed the wrong word");
 								 					send("Client: "+count+" guessed the wrong word", count);
 								    			}
 							 				}
-							 				else if(serverinfo.get(count-1).category == "games")
+							 				else if(serverinfo.get(count-1).category.equals("games")==true)
 							 				{
+							 					//System.out.println("games");
 							 					serverinfo.get(count-1).maxguessgames+=1;
-								    			if(serverinfo.get(count-1).maxguessgames>3)
+								    			if(serverinfo.get(count-1).maxguessgames==3)
 								    			{
 								    				//guessed games word wrong three times
-								 					serverinfo.get(count-1).won = false;
+								    				Wordguess tempinfo1 = new Wordguess();
+								    				word = "";
+								    				foods = new ArrayList<String>();
+							 						games = new ArrayList<String>();
+							 						countries = new ArrayList<String>();
+							 						foods.add("pizza");
+							 						foods.add("hamburger");
+							 						foods.add("pasta");
+							 						games.add("scrabble");
+							 						games.add("chess");
+							 						games.add("poker");
+							 						countries.add("england");
+							 						countries.add("mexico");
+							 						countries.add("india");
+								    				serverinfo.get(count-1).won = false;
 								 					serverinfo.get(count-1).lost = true;
 								 					serverinfo.get(count-1).haveoneplayer = false;
 								 					serverinfo.get(count-1).category = "";
@@ -552,15 +816,29 @@ public class Server{
 								 					serverinfo.get(count-1).maxguessfoods = 0;
 								 					serverinfo.get(count-1).maxguessgames = 0;
 								 					serverinfo.get(count-1).maxguesscountries = 0;
+								 					serverinfo.get(count-1).categorieswon = 0;
 								 					serverinfo.get(count-1).position = new ArrayList<Integer>();
 								 					serverinfo.get(count-1).remaininguess = 6;
+								 					tempinfo1.category = serverinfo.get(count-1).category;
+								    				tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
+								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
+								 					tempinfo1.won = serverinfo.get(count-1).won;
+								 					tempinfo1.lost = serverinfo.get(count-1).lost;
+								 					tempinfo1.categorieswon = serverinfo.get(count-1).categorieswon;
+								 					tempinfo1.guessedfoods = serverinfo.get(count-1).guessedfoods;
+								 					tempinfo1.guessedgames = serverinfo.get(count-1).guessedgames;
+								 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
+								 					tempinfo1.position = serverinfo.get(count-1).position;
+								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
 								 					send(tempinfo1, count);
 								    				callback.accept("Client: "+count+" lost the game");
 								    			}
 								    			else
 								    			{
 								    				//guessed games word wrong
-								 					serverinfo.get(count-1).won = false;
+								    				Wordguess tempinfo1 = new Wordguess();
+								    				word = "";
+								    				serverinfo.get(count-1).won = false;
 								 					serverinfo.get(count-1).lost = false;
 								 					serverinfo.get(count-1).haveoneplayer = false;
 								 					serverinfo.get(count-1).category = "";
@@ -570,22 +848,49 @@ public class Server{
 								 					serverinfo.get(count-1).guessedfoods = false;
 								 					serverinfo.get(count-1).guessedgames = false;
 								 					serverinfo.get(count-1).guessedcountries = false;
-								 					serverinfo.get(count-1).maxguessfoods = 0;
-								 					serverinfo.get(count-1).maxguessgames = 0;
-								 					serverinfo.get(count-1).maxguesscountries = 0;
+								 					serverinfo.get(count-1).categorieswon = 0;
 								 					serverinfo.get(count-1).position = new ArrayList<Integer>();
 								 					serverinfo.get(count-1).remaininguess = 6;
+								 					//client can pick another category
+								 					serverinfo.get(count-1).playagain = true;
+								    				tempinfo1.playagain = serverinfo.get(count-1).playagain;
+								 					tempinfo1.category = serverinfo.get(count-1).category;
+								    				tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
+								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
+								 					tempinfo1.won = serverinfo.get(count-1).won;
+								 					tempinfo1.lost = serverinfo.get(count-1).lost;
+								 					tempinfo1.categorieswon = serverinfo.get(count-1).categorieswon;
+								 					tempinfo1.guessedfoods = serverinfo.get(count-1).guessedfoods;
+								 					tempinfo1.guessedgames = serverinfo.get(count-1).guessedgames;
+								 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
+								 					tempinfo1.position = serverinfo.get(count-1).position;
+								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
 								 					send(tempinfo1, count);
 								 					callback.accept("Client: "+count+" guessed the wrong word");
 								    			}
 							 				}
 							 				else
 							 				{
+							 					//System.out.println("countries");
 							 					serverinfo.get(count-1).maxguesscountries+=1;
-							 					if(serverinfo.get(count-1).maxguesscountries>3)
+							 					if(serverinfo.get(count-1).maxguesscountries==3)
 								    			{
 							 						//guessed countries word wrong three times
-								 					serverinfo.get(count-1).won = false;
+							 						Wordguess tempinfo1 = new Wordguess();
+							 						word = "";
+							 						foods = new ArrayList<String>();
+							 						games = new ArrayList<String>();
+							 						countries = new ArrayList<String>();
+							 						foods.add("pizza");
+							 						foods.add("hamburger");
+							 						foods.add("pasta");
+							 						games.add("scrabble");
+							 						games.add("chess");
+							 						games.add("poker");
+							 						countries.add("england");
+							 						countries.add("mexico");
+							 						countries.add("india");
+							 						serverinfo.get(count-1).won = false;
 								 					serverinfo.get(count-1).lost = true;
 								 					serverinfo.get(count-1).haveoneplayer = false;
 								 					serverinfo.get(count-1).category = "";
@@ -600,13 +905,27 @@ public class Server{
 								 					serverinfo.get(count-1).maxguesscountries = 0;
 								 					serverinfo.get(count-1).position = new ArrayList<Integer>();
 								 					serverinfo.get(count-1).remaininguess = 6;
+								 					serverinfo.get(count-1).categorieswon = 0;
+								 					tempinfo1.category = serverinfo.get(count-1).category;
+								    				tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
+								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
+								 					tempinfo1.won = serverinfo.get(count-1).won;
+								 					tempinfo1.lost = serverinfo.get(count-1).lost;
+								 					tempinfo1.guessedfoods = serverinfo.get(count-1).guessedfoods;
+								 					tempinfo1.guessedgames = serverinfo.get(count-1).guessedgames;
+								 					tempinfo1.categorieswon = serverinfo.get(count-1).categorieswon;
+								 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
+								 					tempinfo1.position = serverinfo.get(count-1).position;
+								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
 								 					send(tempinfo1, count);
 								    				callback.accept("Client: "+count+" lost the game");
 								    			}
 								    			else
 								    			{
 								    				//guessed countries word wrong
-								 					serverinfo.get(count-1).won = false;
+								    				Wordguess tempinfo1 = new Wordguess();
+								    				word = "";
+								    				serverinfo.get(count-1).won = false;
 								 					serverinfo.get(count-1).lost = false;
 								 					serverinfo.get(count-1).haveoneplayer = false;
 								 					serverinfo.get(count-1).category = "";
@@ -616,11 +935,22 @@ public class Server{
 								 					serverinfo.get(count-1).guessedfoods = false;
 								 					serverinfo.get(count-1).guessedgames = false;
 								 					serverinfo.get(count-1).guessedcountries = false;
-								 					serverinfo.get(count-1).maxguessfoods = 0;
-								 					serverinfo.get(count-1).maxguessgames = 0;
-								 					serverinfo.get(count-1).maxguesscountries = 0;
 								 					serverinfo.get(count-1).position = new ArrayList<Integer>();
 								 					serverinfo.get(count-1).remaininguess = 6;
+								 					//client can pick another category
+								 					serverinfo.get(count-1).playagain = true;
+								    				tempinfo1.playagain = serverinfo.get(count-1).playagain;
+								    				tempinfo1.category = serverinfo.get(count-1).category;
+								    				tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
+								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
+								 					tempinfo1.won = serverinfo.get(count-1).won;
+								 					tempinfo1.lost = serverinfo.get(count-1).lost;
+								 					tempinfo1.categorieswon = serverinfo.get(count-1).categorieswon;
+								 					tempinfo1.guessedfoods = serverinfo.get(count-1).guessedfoods;
+								 					tempinfo1.guessedgames = serverinfo.get(count-1).guessedgames;
+								 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
+								 					tempinfo1.position = serverinfo.get(count-1).position;
+								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
 								 					send(tempinfo1, count);
 								 					callback.accept("Client: "+count+" guessed the wrong word");
 								 					send("Client: "+count+" guessed the wrong word", count);
@@ -629,7 +959,7 @@ public class Server{
 								    	}
 								    	serverinfo.get(count-1).wordguess = "";
 								    }
-								    else
+								    else if(serverinfo.get(count-1).category.equals("")==false)
 								    {
 								    	//picked category
 								    	try{
@@ -692,6 +1022,9 @@ public class Server{
 								    		e.printStackTrace();
 								    	}
 								    }
+					    	    	else
+					    	    	{
+					    	    	}
 							    }
 							    else
 							    {

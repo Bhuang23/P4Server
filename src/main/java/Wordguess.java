@@ -21,8 +21,11 @@ public class Wordguess implements Serializable{
     int maxguessgames;
     int maxguesscountries;
     boolean lost;
+    int categorieswon;
+    boolean playagain;
 	Wordguess()
 	{
+		categorieswon = 0;
 		count = 0;
 		numplayers = 0;
 		won = false;
@@ -40,5 +43,6 @@ public class Wordguess implements Serializable{
 	    maxguesscountries = 0;
 		position = new ArrayList<Integer>();
 		remaininguess = 6;
+		playagain = false;
 	}
 }
