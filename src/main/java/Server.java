@@ -17,6 +17,9 @@ public class Server{
 	public ArrayList<String> foods = new ArrayList<String>();
 	public ArrayList<String> games = new ArrayList<String>();
 	public ArrayList<String> countries = new ArrayList<String>();
+	public ArrayList<ArrayList<String>> foodslist = new ArrayList<ArrayList<String>>();
+	public ArrayList<ArrayList<String>> gameslist = new ArrayList<ArrayList<String>>();
+	public ArrayList<ArrayList<String>> countrieslist = new ArrayList<ArrayList<String>>();
 	boolean playeroneonserver;
 	TheServer server;
 	Wordguess serverclientinfo;
@@ -48,42 +51,43 @@ public class Server{
 			    				ClientThread c;
 			    				//wait for new client
 			    				c = new ClientThread(mysocket.accept());
-			    				//server assigns clientThread one to client if playeroneonserver is false
-			    				if(counter.size() != 0)
+			    				//connect client and assign client count to clients.size()+1
+			    				c.count = clients.size()+1;
+			    				callback.accept("client has connected to server: " + "client #" + String.valueOf(c.count));
+			    				Wordguess client = new Wordguess();
+			    				client.count = c.count;
+			    				serverinfo.add(client);
+			    				clients.add(c);
+			    				//each client gets their own list of foods, games and countries
+			    				ArrayList<String> foodscopy = new ArrayList<String>();
+			    				ArrayList<String> gamescopy = new ArrayList<String>();
+			    				ArrayList<String> countriescopy = new ArrayList<String>();
+			    				//copy everything into new lists
+			    				for(int i = 0; i < 3; i++)
 			    				{
-			    					//connect client and assign client count to count of most recent client to leave
-			    					c.count = counter.get(0);
-			    					callback.accept("client has connected to server: " + "client #" + String.valueOf(c.count));
-			    					clients.add(c.count-1, c);
-			    					Wordguess client = new Wordguess();
-			    					client.count = c.count;
-			    					serverinfo.add(c.count-1, client);
-			    					counter.remove(0);
-			    					serverclientinfo.numplayers+=1;
-			    					if(serverclientinfo.numplayers >= 1)
-			    					{
-			    						serverclientinfo.haveoneplayer = true;
-			    					}
-			    					c.start();
+			    					foodscopy.add(foods.get(i));
+			    					gamescopy.add(games.get(i));
+			    					countriescopy.add(countries.get(i));
 			    				}
-			    				else
+			    				foodslist.add(foodscopy);
+			    				gameslist.add(gamescopy);
+			    				countrieslist.add(countriescopy);
+			    				serverclientinfo.numplayers+=1;
+			    				//make sure all clients and serverinfo wordguesses have correct count
+			    				for(int i = 0; i < clients.size(); i++){
+			    					clients.get(i).count = i+1;
+			    				}
+			    				for(int i = 0; i < serverinfo.size(); i++)
 			    				{
-			    					//connect client and assign client count to clients.size()
-			    					c.count = clients.size()+1;
-			    					callback.accept("client has connected to server: " + "client #" + String.valueOf(c.count));
-			    					Wordguess client = new Wordguess();
-			    					client.count = c.count;
-			    					serverinfo.add(client);
-			    					clients.add(c);
-			    					serverclientinfo.numplayers+=1;
-			    					if(serverclientinfo.numplayers >= 1)
-			    					{
-			    						serverclientinfo.haveoneplayer = true;
-			    					}
-			    					playeroneonserver = true;
-			    					c.start();
+			    					serverinfo.get(i).count = i+1;
 			    				}
-						}
+			    				if(serverclientinfo.numplayers >= 1)
+			    				{
+			    					serverclientinfo.haveoneplayer = true;
+			    				}
+			    				playeroneonserver = true;
+			    				c.start();
+			    }
 			}
 			//end of try
 			catch(Exception e) {
@@ -192,18 +196,13 @@ public class Server{
 									    			{
 									    				//guessed food word wrong three times
 									    				word = "";
-									    				foods = new ArrayList<String>();
-								 						games = new ArrayList<String>();
-								 						countries = new ArrayList<String>();
-								 						foods.add("pizza");
-									    				foods.add("hamburger");
-									    				foods.add("pasta");
-									    				games.add("scrabble");
-									    				games.add("chess");
-									    				games.add("poker");
-									    				countries.add("england");
-									    				countries.add("mexico");
-									    				countries.add("india");
+								 						//reset words
+								 						foodslist.get(count-1).clear(); 
+								 						gameslist.get(count-1).clear(); 
+								 						countrieslist.get(count-1).clear(); 
+								 						foodslist.get(count-1).addAll(foods);
+								 						gameslist.get(count-1).addAll(games); 
+								 						countrieslist.get(count-1).addAll(countries); 
 									    				serverinfo.get(count-1).won = false;
 									 					serverinfo.get(count-1).lost = true;
 									 					serverinfo.get(count-1).haveoneplayer = false;
@@ -268,18 +267,13 @@ public class Server{
 									    			{
 									    				//guessed games word wrong three times
 									    				word = "";
-									    				foods = new ArrayList<String>();
-								 						games = new ArrayList<String>();
-								 						countries = new ArrayList<String>();
-								 						foods.add("pizza");
-									    				foods.add("hamburger");
-									    				foods.add("pasta");
-									    				games.add("scrabble");
-									    				games.add("chess");
-									    				games.add("poker");
-									    				countries.add("england");
-									    				countries.add("mexico");
-									    				countries.add("india");
+								 						//reset words
+								 						foodslist.get(count-1).clear(); 
+								 						gameslist.get(count-1).clear(); 
+								 						countrieslist.get(count-1).clear(); 
+								 						foodslist.get(count-1).addAll(foods);
+								 						gameslist.get(count-1).addAll(games); 
+								 						countrieslist.get(count-1).addAll(countries); 
 									    				serverinfo.get(count-1).won = false;
 									 					serverinfo.get(count-1).lost = true;
 									 					serverinfo.get(count-1).haveoneplayer = false;
@@ -343,18 +337,13 @@ public class Server{
 								 					if(serverinfo.get(count-1).maxguesscountries==3)
 									    			{
 								 						//guessed countries word wrong three times
-								 						foods = new ArrayList<String>();
-								 						games = new ArrayList<String>();
-								 						countries = new ArrayList<String>();
-								 						foods.add("pizza");
-								 						foods.add("hamburger");
-								 						foods.add("pasta");
-								 						games.add("scrabble");
-								 						games.add("chess");
-								 						games.add("poker");
-								 						countries.add("england");
-								 						countries.add("mexico");
-								 						countries.add("india");
+								 						//reset words
+								 						foodslist.get(count-1).clear(); 
+								 						gameslist.get(count-1).clear(); 
+								 						countrieslist.get(count-1).clear(); 
+								 						foodslist.get(count-1).addAll(foods);
+								 						gameslist.get(count-1).addAll(games); 
+								 						countrieslist.get(count-1).addAll(countries); 
 								 						word = "";
 								 						serverinfo.get(count-1).won = false;
 									 					serverinfo.get(count-1).lost = true;
@@ -444,18 +433,13 @@ public class Server{
 							 						//client won
 							 						Wordguess tempinfo1 = new Wordguess();
 							 						word = "";
-							 						foods = new ArrayList<String>();
-							 						games = new ArrayList<String>();
-							 						countries = new ArrayList<String>();
-							 						foods.add("pizza");
-							 						foods.add("hamburger");
-							 						foods.add("pasta");
-							 						games.add("scrabble");
-							 						games.add("chess");
-							 						games.add("poker");
-							 						countries.add("england");
-							 						countries.add("mexico");
-							 						countries.add("india");
+							 						//reset words
+							 						foodslist.get(count-1).clear(); 
+							 						gameslist.get(count-1).clear(); 
+							 						countrieslist.get(count-1).clear(); 
+							 						foodslist.get(count-1).addAll(foods);
+							 						gameslist.get(count-1).addAll(games); 
+							 						countrieslist.get(count-1).addAll(countries); 
 							 						serverinfo.get(count-1).won = true;
 								 					serverinfo.get(count-1).lost = false;
 								 					serverinfo.get(count-1).haveoneplayer = false;
@@ -528,18 +512,13 @@ public class Server{
 							 						//client won the game
 							 						Wordguess tempinfo1 = new Wordguess();
 							 						word = "";
-							 						foods = new ArrayList<String>();
-							 						games = new ArrayList<String>();
-							 						countries = new ArrayList<String>();
-							 						foods.add("pizza");
-							 						foods.add("hamburger");
-							 						foods.add("pasta");
-							 						games.add("scrabble");
-							 						games.add("chess");
-							 						games.add("poker");
-							 						countries.add("england");
-							 						countries.add("mexico");
-							 						countries.add("india");
+							 						//reset words
+							 						foodslist.get(count-1).clear(); 
+							 						gameslist.get(count-1).clear(); 
+							 						countrieslist.get(count-1).clear(); 
+							 						foodslist.get(count-1).addAll(foods);
+							 						gameslist.get(count-1).addAll(games); 
+							 						countrieslist.get(count-1).addAll(countries); 
 							 						serverinfo.get(count-1).won = true;
 								 					serverinfo.get(count-1).lost = false;
 								 					serverinfo.get(count-1).haveoneplayer = false;
@@ -611,18 +590,14 @@ public class Server{
 							 						//client won the game
 							 						Wordguess tempinfo1 = new Wordguess();
 							 						word = "";
-							 						foods = new ArrayList<String>();
-							 						games = new ArrayList<String>();
-							 						countries = new ArrayList<String>();
-							 						foods.add("pizza");
-							 						foods.add("hamburger");
-							 						foods.add("pasta");
-							 						games.add("scrabble");
-							 						games.add("chess");
-							 						games.add("poker");
-							 						countries.add("england");
-							 						countries.add("mexico");
-							 						countries.add("india");serverinfo.get(count-1).won = true;
+							 						//reset words
+							 						foodslist.get(count-1).clear(); 
+							 						gameslist.get(count-1).clear(); 
+							 						countrieslist.get(count-1).clear(); 
+							 						foodslist.get(count-1).addAll(foods);
+							 						gameslist.get(count-1).addAll(games); 
+							 						countrieslist.get(count-1).addAll(countries); 
+							 						serverinfo.get(count-1).won = true;
 								 					serverinfo.get(count-1).lost = false;
 								 					serverinfo.get(count-1).haveoneplayer = false;
 								 					serverinfo.get(count-1).category = "";
@@ -702,18 +677,13 @@ public class Server{
 								    				//guessed food word wrong three times
 								    				Wordguess tempinfo1 = new Wordguess();
 								    				word = "";
-								    				foods = new ArrayList<String>();
-							 						games = new ArrayList<String>();
-							 						countries = new ArrayList<String>();
-							 						foods.add("pizza");
-							 						foods.add("hamburger");
-							 						foods.add("pasta");
-							 						games.add("scrabble");
-							 						games.add("chess");
-							 						games.add("poker");
-							 						countries.add("england");
-							 						countries.add("mexico");
-							 						countries.add("india");
+							 						//reset words
+							 						foodslist.get(count-1).clear(); 
+							 						gameslist.get(count-1).clear(); 
+							 						countrieslist.get(count-1).clear(); 
+							 						foodslist.get(count-1).addAll(foods);
+							 						gameslist.get(count-1).addAll(games); 
+							 						countrieslist.get(count-1).addAll(countries); 
 							 						serverinfo.get(count-1).won = false;
 								 					serverinfo.get(count-1).lost = true;
 								 					serverinfo.get(count-1).haveoneplayer = false;
@@ -791,18 +761,13 @@ public class Server{
 								    				//guessed games word wrong three times
 								    				Wordguess tempinfo1 = new Wordguess();
 								    				word = "";
-								    				foods = new ArrayList<String>();
-							 						games = new ArrayList<String>();
-							 						countries = new ArrayList<String>();
-							 						foods.add("pizza");
-							 						foods.add("hamburger");
-							 						foods.add("pasta");
-							 						games.add("scrabble");
-							 						games.add("chess");
-							 						games.add("poker");
-							 						countries.add("england");
-							 						countries.add("mexico");
-							 						countries.add("india");
+							 						//reset words
+							 						foodslist.get(count-1).clear(); 
+							 						gameslist.get(count-1).clear(); 
+							 						countrieslist.get(count-1).clear(); 
+							 						foodslist.get(count-1).addAll(foods);
+							 						gameslist.get(count-1).addAll(games); 
+							 						countrieslist.get(count-1).addAll(countries); 
 								    				serverinfo.get(count-1).won = false;
 								 					serverinfo.get(count-1).lost = true;
 								 					serverinfo.get(count-1).haveoneplayer = false;
@@ -878,18 +843,13 @@ public class Server{
 							 						//guessed countries word wrong three times
 							 						Wordguess tempinfo1 = new Wordguess();
 							 						word = "";
-							 						foods = new ArrayList<String>();
-							 						games = new ArrayList<String>();
-							 						countries = new ArrayList<String>();
-							 						foods.add("pizza");
-							 						foods.add("hamburger");
-							 						foods.add("pasta");
-							 						games.add("scrabble");
-							 						games.add("chess");
-							 						games.add("poker");
-							 						countries.add("england");
-							 						countries.add("mexico");
-							 						countries.add("india");
+							 						//reset words
+								    				foodslist.get(count-1).clear(); 
+							 						gameslist.get(count-1).clear(); 
+							 						countrieslist.get(count-1).clear(); 
+							 						foodslist.get(count-1).addAll(foods);
+							 						gameslist.get(count-1).addAll(games); 
+							 						countrieslist.get(count-1).addAll(countries); 
 							 						serverinfo.get(count-1).won = false;
 								 					serverinfo.get(count-1).lost = true;
 								 					serverinfo.get(count-1).haveoneplayer = false;
@@ -970,8 +930,9 @@ public class Server{
 							 				if(serverinfo.get(count-1).category.equals("foods"))
 							 				{
 							 					//client picked foods so send number of letters of the picked food word
-							 					word = foods.get(rand.nextInt(foods.size()));
-							 					foods.remove(word);
+							 					word = foodslist.get(count-1).get(rand.nextInt(foodslist.get(count-1).size()));
+							 					callback.accept("Word to guessed: "+word);
+							 					foodslist.get(count-1).remove(word);
 							 					serverinfo.get(count-1).numberofletters =  word.length();
 							 					tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
 							 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
@@ -985,8 +946,9 @@ public class Server{
 							 				else if(serverinfo.get(count-1).category.equals("games"))
 							 				{
 							 					//client picked games so send number of letters of the picked games word
-							 					word = games.get(rand.nextInt(games.size()));
-							 					games.remove(word);
+							 					word = gameslist.get(count-1).get(rand.nextInt(gameslist.get(count-1).size()));
+							 					gameslist.get(count-1).remove(word);
+							 					callback.accept("Word to guessed: "+word);
 							 					serverinfo.get(count-1).numberofletters =  word.length();
 							 					tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
 							 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
@@ -1000,8 +962,9 @@ public class Server{
 							 				else if(serverinfo.get(count-1).category.equals("countries"))
 							 				{
 							 					//client picked countries so send number of letters of the picked countries word
-							 					word = countries.get(rand.nextInt(countries.size()));
-							 					countries.remove(word);
+							 					word = countrieslist.get(count-1).get(rand.nextInt(countrieslist.get(count-1).size()));
+							 					countrieslist.get(count-1).remove(word);
+							 					callback.accept("Word to guessed: "+word);
 							 					serverinfo.get(count-1).numberofletters =  word.length();
 							 					tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
 							 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
@@ -1034,11 +997,23 @@ public class Server{
 					    catch(Exception e) {
 					    	//client left
 					    	callback.accept("Error from socket from client: " + count + "....closing down");
-					    	//update all clients with new morraInfo for new game
 					    	serverclientinfo.numplayers--;
 					    	counter.add(count);
 					    	serverinfo.remove(count-1);
 					    	clients.remove(this);
+	    					//shift all clients before the client that was removed to left if client removed wasn't the last client
+					    	//i.e. client 2 becomes client 1 if client 1 left
+					    	for(int i = 0; i < clients.size(); i++){
+	    						clients.get(i).count = i+1;
+	    					}
+	    					for(int i = 0; i < serverinfo.size(); i++)
+	    					{
+	    						serverinfo.get(i).count = i+1;
+	    					}
+	    					//remove
+	    					foodslist.remove(count-1);
+	    					gameslist.remove(count-1);
+	    					countrieslist.remove(count-1);
 					    	break;
 						    //end of while
 					    }
