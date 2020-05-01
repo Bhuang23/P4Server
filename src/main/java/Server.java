@@ -219,6 +219,7 @@ public class Server{
 									 					serverinfo.get(count-1).position = new ArrayList<Integer>();
 									 					serverinfo.get(count-1).remaininguess = 6;
 									 					serverinfo.get(count-1).playagain = false;
+									 					serverinfo.get(count-1).categorieswon = 0;
 									    				tempinfo1.playagain = serverinfo.get(count-1).playagain;
 									    				tempinfo1.category = serverinfo.get(count-1).category;
 									    				tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
@@ -228,7 +229,8 @@ public class Server{
 									 					tempinfo1.guessedfoods = serverinfo.get(count-1).guessedfoods;
 									 					tempinfo1.guessedgames = serverinfo.get(count-1).guessedgames;
 									 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
-									    				callback.accept("Client: "+count+" lost the game");
+									 					send("You lost the game!", count);
+									 					callback.accept("Client: "+count+" lost the game");
 									    				send(tempinfo1, count);
 									    			}
 									    			else
@@ -257,6 +259,7 @@ public class Server{
 									 					tempinfo1.guessedfoods = serverinfo.get(count-1).guessedfoods;
 									 					tempinfo1.guessedgames = serverinfo.get(count-1).guessedgames;
 									 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
+									 					send("You ran out of guesses, please pick another category!", count);
 									 					send(tempinfo1, count);
 									    			}
 								 				}
@@ -290,6 +293,7 @@ public class Server{
 									 					serverinfo.get(count-1).position = new ArrayList<Integer>();
 									 					serverinfo.get(count-1).remaininguess = 6;
 									 					serverinfo.get(count-1).playagain = false;
+									 					serverinfo.get(count-1).categorieswon = 0;
 									    				tempinfo1.playagain = serverinfo.get(count-1).playagain;
 									    				tempinfo1.category = serverinfo.get(count-1).category;
 									    				tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
@@ -299,7 +303,8 @@ public class Server{
 									 					tempinfo1.guessedfoods = serverinfo.get(count-1).guessedfoods;
 									 					tempinfo1.guessedgames = serverinfo.get(count-1).guessedgames;
 									 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
-									    				callback.accept("Client: "+count+" lost the game");
+									 					send("You lost the game!", count);
+									 					callback.accept("Client: "+count+" lost the game");
 									    				send(tempinfo1, count);
 									    			}
 									    			else
@@ -328,7 +333,8 @@ public class Server{
 									 					tempinfo1.guessedfoods = serverinfo.get(count-1).guessedfoods;
 									 					tempinfo1.guessedgames = serverinfo.get(count-1).guessedgames;
 									 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
-										 				send(tempinfo1, count);
+									 					send("You ran out of guesses, please pick another category!", count);
+									 					send(tempinfo1, count);
 									    			}
 								 				}
 								 				else
@@ -361,6 +367,7 @@ public class Server{
 									 					serverinfo.get(count-1).position = new ArrayList<Integer>();
 									 					serverinfo.get(count-1).remaininguess = 6;
 									 					serverinfo.get(count-1).playagain = false;
+									 					serverinfo.get(count-1).categorieswon = 0;
 									 					tempinfo1.playagain = serverinfo.get(count-1).playagain;
 								 						tempinfo1.lost = serverinfo.get(count-1).lost;
 											    		tempinfo1.category = serverinfo.get(count-1).category;
@@ -371,6 +378,7 @@ public class Server{
 									 					tempinfo1.guessedfoods = serverinfo.get(count-1).guessedfoods;
 									 					tempinfo1.guessedgames = serverinfo.get(count-1).guessedgames;
 									 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
+									 					send("You lost the game!", count);
 									 					send(tempinfo1, count);
 									    				callback.accept("Client: "+count+" lost the game");
 									    			}
@@ -400,6 +408,7 @@ public class Server{
 									 					tempinfo1.guessedfoods = serverinfo.get(count-1).guessedfoods;
 									 					tempinfo1.guessedgames = serverinfo.get(count-1).guessedgames;
 									 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
+									 					send("You ran out of guesses, please pick another category!", count);
 									 					send(tempinfo1, count);
 									    			}
 								 				}
@@ -467,6 +476,7 @@ public class Server{
 								 					tempinfo1.guessedfoods = serverinfo.get(count-1).guessedfoods;
 								 					tempinfo1.guessedgames = serverinfo.get(count-1).guessedgames;
 								 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
+								 					send("You won the game!", count);
 								 					send(tempinfo1, count);
 								 					callback.accept("Client: "+count+" won the game");
 							 					}
@@ -498,6 +508,7 @@ public class Server{
 								 					tempinfo1.guessedfoods = serverinfo.get(count-1).guessedfoods;
 								 					tempinfo1.guessedgames = serverinfo.get(count-1).guessedgames;
 								 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
+								 					send("You guessed the right word!", count);
 								 					send(tempinfo1, count);
 								 					callback.accept("Client: "+count+" guessed the right word");
 							 					}
@@ -546,11 +557,13 @@ public class Server{
 								 					tempinfo1.guessedfoods = serverinfo.get(count-1).guessedfoods;
 								 					tempinfo1.guessedgames = serverinfo.get(count-1).guessedgames;
 								 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
+								 					send("You won the game!", count);
 								 					send(tempinfo1, count);
 								 					callback.accept("Client: "+count+" won the game");
 							 					}
 							 					else
 							 					{
+							 						//picked right game word
 							 						word = "";
 							 						Wordguess tempinfo1 = new Wordguess();
 							 						serverinfo.get(count-1).won = false;
@@ -576,6 +589,7 @@ public class Server{
 								 					tempinfo1.guessedfoods = serverinfo.get(count-1).guessedfoods;
 								 					tempinfo1.guessedgames = serverinfo.get(count-1).guessedgames;
 								 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
+								 					send("You guessed the right word!", count);
 								 					send(tempinfo1, count);
 								 					callback.accept("Client: "+count+" guessed the right word");
 							 					}
@@ -625,6 +639,7 @@ public class Server{
 								 					tempinfo1.guessedfoods = serverinfo.get(count-1).guessedfoods;
 								 					tempinfo1.guessedgames = serverinfo.get(count-1).guessedgames;
 								 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
+								 					send("You won the game!", count);
 								 					send(tempinfo1, count);
 								 					callback.accept("Client: "+count+" won the game");
 							 					}
@@ -659,6 +674,7 @@ public class Server{
 								 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
 								 					tempinfo1.position = serverinfo.get(count-1).position;
 								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
+								 					send("You guessed the right word!", count);
 								 					send(tempinfo1, count);
 								 					callback.accept("Client: "+count+" guessed the right word");
 							 					}
@@ -670,7 +686,6 @@ public class Server{
 								    		//didn't guess the word right
 								    		if(serverinfo.get(count-1).category.equals("foods")==true)
 							 				{
-								    			//System.out.println("foods");
 								    			serverinfo.get(count-1).maxguessfoods+=1;
 								    			if(serverinfo.get(count-1).maxguessfoods==3)
 								    			{
@@ -713,6 +728,7 @@ public class Server{
 								 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
 								 					tempinfo1.position = serverinfo.get(count-1).position;
 								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
+								 					send("You lost the game!", count);
 								 					send(tempinfo1, count);
 								    				callback.accept("Client: "+count+" lost the game");
 								    			}
@@ -747,9 +763,9 @@ public class Server{
 								 					tempinfo1.categorieswon = serverinfo.get(count-1).categorieswon;
 								 					tempinfo1.position = serverinfo.get(count-1).position;
 								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
+								 					send("You guessed the wrong word!", count);
 								 					send(tempinfo1, count);
 								 					callback.accept("Client: "+count+" guessed the wrong word");
-								 					send("Client: "+count+" guessed the wrong word", count);
 								    			}
 							 				}
 							 				else if(serverinfo.get(count-1).category.equals("games")==true)
@@ -795,6 +811,7 @@ public class Server{
 								 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
 								 					tempinfo1.position = serverinfo.get(count-1).position;
 								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
+								 					send("You lost the game!", count);
 								 					send(tempinfo1, count);
 								    				callback.accept("Client: "+count+" lost the game");
 								    			}
@@ -830,13 +847,13 @@ public class Server{
 								 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
 								 					tempinfo1.position = serverinfo.get(count-1).position;
 								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
+								 					send("You guessed the wrong word!", count);
 								 					send(tempinfo1, count);
 								 					callback.accept("Client: "+count+" guessed the wrong word");
 								    			}
 							 				}
 							 				else
 							 				{
-							 					//System.out.println("countries");
 							 					serverinfo.get(count-1).maxguesscountries+=1;
 							 					if(serverinfo.get(count-1).maxguesscountries==3)
 								    			{
@@ -877,6 +894,7 @@ public class Server{
 								 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
 								 					tempinfo1.position = serverinfo.get(count-1).position;
 								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
+								 					send("You lost the game!", count);
 								 					send(tempinfo1, count);
 								    				callback.accept("Client: "+count+" lost the game");
 								    			}
@@ -911,9 +929,9 @@ public class Server{
 								 					tempinfo1.guessedcountries = serverinfo.get(count-1).guessedcountries;
 								 					tempinfo1.position = serverinfo.get(count-1).position;
 								 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
+								 					send("You guessed the wrong word!", count);
 								 					send(tempinfo1, count);
 								 					callback.accept("Client: "+count+" guessed the wrong word");
-								 					send("Client: "+count+" guessed the wrong word", count);
 								    			}
 							 				}
 								    	}
@@ -934,6 +952,7 @@ public class Server{
 							 					callback.accept("Word to guessed: "+word);
 							 					foodslist.get(count-1).remove(word);
 							 					serverinfo.get(count-1).numberofletters =  word.length();
+							 					send("Number of letters in word: "+serverinfo.get(count-1).numberofletters, count);
 							 					tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
 							 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
 							 					tempinfo1.won = serverinfo.get(count-1).won;
@@ -950,6 +969,7 @@ public class Server{
 							 					gameslist.get(count-1).remove(word);
 							 					callback.accept("Word to guessed: "+word);
 							 					serverinfo.get(count-1).numberofletters =  word.length();
+							 					send("Number of letters in word: "+serverinfo.get(count-1).numberofletters, count);
 							 					tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
 							 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
 							 					tempinfo1.won = serverinfo.get(count-1).won;
@@ -966,6 +986,7 @@ public class Server{
 							 					countrieslist.get(count-1).remove(word);
 							 					callback.accept("Word to guessed: "+word);
 							 					serverinfo.get(count-1).numberofletters =  word.length();
+							 					send("Number of letters in word: "+serverinfo.get(count-1).numberofletters, count);
 							 					tempinfo1.numberofletters = serverinfo.get(count-1).numberofletters;
 							 					tempinfo1.remaininguess = serverinfo.get(count-1).remaininguess;
 							 					tempinfo1.won = serverinfo.get(count-1).won;
